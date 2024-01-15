@@ -4,6 +4,8 @@ using System.Collections;
 
 public class SiriusFlash : MonoBehaviour
 {
+    public AudioSource Sound;
+    public AudioClip Activate;
     private LineRenderer lr;
     public Button SiriusButton;
     public GameObject[] StarOrder; // Array storing the points in the correct order
@@ -27,6 +29,7 @@ public class SiriusFlash : MonoBehaviour
         {
             StopCoroutine(timerCoroutine); // Stop any existing timer coroutine
         }
+        Sound.PlayOneShot(Activate);
         DrawLine();
         timerCoroutine = StartCoroutine(TimerCoroutine());
     }
