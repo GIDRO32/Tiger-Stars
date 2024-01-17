@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class MenuControl : MonoBehaviour
 {
+    public AudioSource Sounds;
+    public AudioClip Test;
+    public AudioClip Open;
+    public AudioClip Close;
     public GameObject MainMenu;
     public GameObject[] MenuArray;
     public GameObject[] CompleteMarks;
@@ -14,19 +18,25 @@ public class MenuControl : MonoBehaviour
     {
         MainMenu.SetActive(true);
         MenuArray[0].SetActive(false);
-        // MenuArray[1].SetActive(false);
-        // MenuArray[2].SetActive(false);
-        // MenuArray[3].SetActive(false);
+        MenuArray[1].SetActive(false);
+        MenuArray[2].SetActive(false);
+        MenuArray[3].SetActive(false);
     }
     public void OpenPanel(int openable)
     {
+        Sounds.PlayOneShot(Open);
         MainMenu.SetActive(false);
         MenuArray[openable].SetActive(true);
     }
     public void ClosePanel(int closable)
     {
+        Sounds.PlayOneShot(Close);
         MainMenu.SetActive(true);
         MenuArray[closable].SetActive(false);
+    }
+    public void SoundTest()
+    {
+        Sounds.PlayOneShot(Test);
     }
 
     // Update is called once per frame

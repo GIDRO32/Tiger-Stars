@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class LevelRoster : MonoBehaviour
 {
+    public AudioSource Sounds;
+    public AudioClip Scrolling;
     public GameObject[] levelPages;
     private int currentPage = 0;
     // Start is called before the first frame update
@@ -38,7 +40,7 @@ public class LevelRoster : MonoBehaviour
     public void NextPage()
     {
         currentPage++;
-        // SFX.PlayOneShot(Scrolling);
+        Sounds.PlayOneShot(Scrolling);
         if (currentPage >= levelPages.Length)
         {
             currentPage = 0; // Зациклюємо на першу сторінку, якщо досягнуто кінця
@@ -47,7 +49,7 @@ public class LevelRoster : MonoBehaviour
     }
     public void PreviousPage()
     {
-        // SFX.PlayOneShot(Scrolling);
+        Sounds.PlayOneShot(Scrolling);
         currentPage--;
         if (currentPage < 0)
         {
