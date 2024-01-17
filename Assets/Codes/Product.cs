@@ -1,25 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Product : MonoBehaviour
 {
-    public Text ProductTitle;
-    public string ProductTag;
-    public string PriceTag;
-    public int price;
-
-    // Start is called before the first frame update
-    void Start()
+    #region Singleton:Product
+    public static Product Instance;
+    void Awake()
     {
-        
+        if(Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
+    #endregion
+    
+    public int Coins;
 
-    // Update is called once per frame
-    void Update()
+    public void UseCoins(int amount)
     {
-        PlayerPrefs.SetInt(PriceTag, price);
-        ProductTitle.text = ProductTag + "\nPrice: " + price;
+        Coins -= amount;
+    }
+    public bool HasEnoughCoins(int amount)
+    {
+        return(Coins >= amount);
     }
 }
