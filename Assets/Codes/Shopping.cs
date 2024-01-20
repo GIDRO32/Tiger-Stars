@@ -7,6 +7,9 @@ public class Shopping : MonoBehaviour
 {
     #region SingleTon:Shopping
     public static Shopping Instance;
+    public AudioSource Sounds;
+    public AudioClip Buy;
+    public AudioClip CantBuy;
     void Awake()
     {
         if(Instance == null)
@@ -32,6 +35,7 @@ public class Shopping : MonoBehaviour
     public GameObject NotEnough_MSG;
     void Start()
     { 
+        LoadItemAvailability();
         NotEnough_MSG.SetActive(false);
         int len = ShopItemList.Count;
         for(int i = 0; i < len; i++)
@@ -41,7 +45,10 @@ public class Shopping : MonoBehaviour
             g.transform.GetChild(1).GetComponent<Text>().text = ShopItemList[i].Title;
             g.transform.GetChild(2).GetChild(0).GetComponent<Text>().text = ShopItemList[i].price.ToString();
             buyBtn = g.transform.GetChild(3).GetComponent<Button>();
-            buyBtn.interactable = !ShopItemList[i].isAvailable;
+            if(ShopItemList[i].isAvailable)
+            {
+                DisableBuyButton();
+            }
             buyBtn.AddEventListener(i, OnBuyBtnClicked);
         }
     }
@@ -53,26 +60,67 @@ public class Shopping : MonoBehaviour
             }
             NotEnough_MSG.SetActive(false);
     }
+    void LoadItemAvailability()
+    {
+        for (int i = 0; i < ShopItemList.Count; i++)
+        {
+            ShopItemList[i].isAvailable = PlayerPrefs.GetInt("ItemAvailable_" + i, 0) == 1;
+        }
+    }
     void OnBuyBtnClicked(int itemIndex)
     {
         if(Product.Instance.HasEnoughCoins(ShopItemList[itemIndex].price))
         {
+        Sounds.PlayOneShot(Buy);
         Product.Instance.UseCoins(ShopItemList[itemIndex].price);
         ShopItemList[itemIndex].isAvailable = true;
+        PlayerPrefs.SetInt("ItemAvailable_" + itemIndex, 1); // Save purchase
+        PlayerPrefs.Save();
         buyBtn = ShopScrolling.GetChild(itemIndex).GetChild(3).GetComponent<Button>();
-        buyBtn.interactable = false;
-        buyBtn.transform.GetChild(0).GetComponent<Text>().text = "Owned";
+        DisableBuyButton();
+        Profile.Instance.AddSkin(ShopItemList[itemIndex].Image);
         }
         else
         {
+            Sounds.PlayOneShot(CantBuy);
             Debug.Log("Not Enough!");
             NotEnough_MSG.SetActive(true);
             StartCoroutine("MessageHang");
         }
     }
+public void ResetPurchases()
+{
+    for (int i = 1; i < ShopItemList.Count; i++) // Start from 1 to skip the default item
+    {
+        ShopItemList[i].isAvailable = false;
+        PlayerPrefs.SetInt("ItemAvailable_" + i, 0);
+
+        if (ShopScrolling != null && ShopScrolling.childCount > i)
+        {
+            Transform itemTransform = ShopScrolling.GetChild(i);
+            Button buyButton = itemTransform.GetChild(3).GetComponent<Button>();
+            if (buyButton != null)
+            {
+                buyButton.interactable = true;
+                buyButton.transform.GetChild(0).GetComponent<Text>().text = "Buy";
+            }
+        }
+    }
+    PlayerPrefs.SetInt("Total", 0);
+    PlayerPrefs.Save();
+
+    // No need to call LoadItemAvailability() here since we're already updating the UI
+}
+
+    void DisableBuyButton()
+    {
+        buyBtn.interactable = false;
+        buyBtn.transform.GetChild(0).GetComponent<Text>().text = "Owned";
+    }
     void Update()
     {
         Balance.text = Product.Instance.Coins.ToString();
+        LoadItemAvailability();
     }
     public void OpenShop()
     {

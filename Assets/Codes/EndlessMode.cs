@@ -1,143 +1,157 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class EndlessMode : MonoBehaviour
 {
+    public List<GameObject> AllPatterns; // List of all pattern parent GameObjects
+    [SerializeField] List<GameObject> CurrentPattern = new List<GameObject>(); // The current active pattern
+    public List<Transform> PlayerPattern = new List<Transform>(); // The pattern the player is building
+    private int nextStarIndex = 0; // Index to track the next expected star in the order
     public AudioSource Sound_Effects;
     public AudioClip Connect;
+    public AudioClip Wrong;
     public AudioClip Test;
     public AudioClip OpenSound;
     public AudioClip CloseSound;
     public AudioClip LoseSound;
-    public AudioClip Wrong;
-    private LineRenderer lr;
-    public List<Transform> points = new List<Transform>();
-    public List<GameObject[]> StarOrder; // Array storing the correct order of stars
-    public GameObject[] PatternParents;
     public GameObject Interface;
     public GameObject GameOverScreen;
     public GameObject PausePanel;
     public GameObject HomePanel;
-    private int currentPatternIndex = 0;
-    private int nextStarIndex = 0; // Index to track the next expected star in the order
     public Transform lastPoints;
+    private LineRenderer lr;
+    public float timeLeft = 60.0f; // Starting time
+    private bool isGameOver = false;
+    public Slider timerSlider;
+    public Text timeText;
+    public Text coinCounter;
+    private int coins = 0;
+    private int balance;
 
-    void Awake()
+    void Start()
     {
+        balance = PlayerPrefs.GetInt("Total", balance);
         lr = GetComponent<LineRenderer>();
-        Interface.SetActive(true);
+        LoadRandomPattern();
         GameOverScreen.SetActive(false);
         PausePanel.SetActive(false);
         HomePanel.SetActive(false);
     }
 
-private void makeLine(Transform finalPoint)
-{
-    // Ensure that the current pattern index is within bounds
-    if (currentPatternIndex >= StarOrder.Count) return;
-
-    // Access the current pattern
-    GameObject[] currentPattern = StarOrder[currentPatternIndex];
-
-    // Ensure that the next star index is within bounds for the current pattern
-    if (nextStarIndex >= currentPattern.Length) return;
-
-    if (finalPoint == currentPattern[nextStarIndex].transform)
+    void LoadRandomPattern()
     {
-        if (lastPoints == null)
+        timeLeft += 5f;
+        lr.enabled = false;
+        // Deactivate all patterns
+        foreach (var pattern in AllPatterns)
         {
-            lastPoints = finalPoint;
-            points.Add(lastPoints);
+            pattern.SetActive(false);
         }
-        else
+
+        // Choose a random pattern
+        GameObject chosenPattern = AllPatterns[Random.Range(0, AllPatterns.Count)];
+        chosenPattern.SetActive(true);
+
+        // Clear previous patterns
+        CurrentPattern.Clear();
+
+        // Populate the CurrentPattern list with children of the chosen pattern
+        foreach (Transform child in chosenPattern.transform)
         {
-            points.Add(finalPoint);
-            lr.enabled = true;
-            SetupLine();
+            CurrentPattern.Add(child.gameObject);
         }
-        nextStarIndex++;
-    }
-    else
-    {
-        Sound_Effects.PlayOneShot(Wrong);
-        Debug.Log("WRONG!");
-    }
 
-    // Check if the current pattern is complete
-    if (nextStarIndex >= currentPattern.Length)
-    {
-       LoadNewPattern();
-    }
-}
-private bool IsPatternCompleted()
-{
-    // Get the current pattern
-    GameObject[] currentPattern = StarOrder[nextStarIndex];
-
-    // Check if all points in the pattern have been connected
-    if (points.Count == currentPattern.Length)
-    {
-        for (int i = 0; i < points.Count; i++)
+        // Reset for new pattern
+        PlayerPattern.Clear();
+        nextStarIndex = 0;
+        if (CurrentPattern.Count > 0)
         {
-            if (points[i] != currentPattern[i].transform)
-            {
-                return false; // Point mismatch
-            }
-        }
-        return true; // All points match
-    }
-
-    return false; // Not all points have been connected yet
-}
-
-private void LoadNewPattern()
-{
-    // Deactivate the current pattern
-    if (currentPatternIndex >= 0)
-    {
-        PatternParents[currentPatternIndex].SetActive(false);
-    }
-
-    // Select a random new pattern
-    currentPatternIndex = Random.Range(0, PatternParents.Length);
-    PatternParents[currentPatternIndex].SetActive(true);
-
-    // Reset relevant variables for the new pattern
-    nextStarIndex = 0;
-    lastPoints = null;
-    points.Clear();
-    lr.positionCount = 0; // Clear the LineRenderer
-}
-
-    private void SetupLine()
-    {
-        int pointLength = points.Count;
-        lr.positionCount = pointLength;
-        for (int i = 0; i < pointLength; i++)
-        {
-            lr.SetPosition(i, points[i].position);
+            lastPoints = CurrentPattern[0].transform;
         }
     }
 
     void Update()
     {
-    if (!Interface.activeSelf)
-    {
+        coinCounter.text = coins.ToString();
+        timeText.text = timeLeft.ToString("F2");
+        if (!Interface.activeSelf)
+        {
         return; // Ignore clicks if any of the conditions are met
-    }
+        }
         if (Input.GetMouseButtonDown(0))
         {
             Vector2 worldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
             if (hit.collider != null)
             {
-                Sound_Effects.PlayOneShot(Connect);
-                makeLine(hit.collider.transform);
-                print(hit.collider.name);
+                AddStarToPlayerPattern(hit.collider.transform);
+                Debug.Log(balance+coins);
             }
+        }
+        if (IsPatternCompleted())
+        {
+            LoadRandomPattern();
+        }
+        if (!isGameOver)
+        {
+            // Update timer
+            timeLeft -= Time.deltaTime;
+            timerSlider.value = timeLeft/60f;
+
+            // Check for game over
+            if (timeLeft <= 0)
+            {
+                Sound_Effects.PlayOneShot(LoseSound);
+                balance += coins;
+                PlayerPrefs.SetInt("Total", balance);
+                Debug.Log(balance);
+                GameOver();
+            }
+
+            // Rest of the update logic...
+        }
+    }
+    private void SetupLine()
+    {
+        int pointLength = PlayerPattern.Count;
+        lr.positionCount = pointLength;
+        for (int i = 0; i < pointLength; i++)
+        {
+            lr.SetPosition(i, PlayerPattern[i].position);
+        }
+    }
+
+    public void AddStarToPlayerPattern(Transform star)
+    {
+        if (star == CurrentPattern[nextStarIndex].transform)
+        {
+            if(lastPoints == null)
+            {
+                lastPoints = star;
+                PlayerPattern.Add(lastPoints);
+            }
+            else
+            {
+                Sound_Effects.PlayOneShot(Connect);
+                coins += 100;
+                PlayerPattern.Add(star);
+                lr.enabled = true;
+                SetupLine();
+            }
+            nextStarIndex++;
+
+            if (IsPatternCompleted())
+            {
+                LoadRandomPattern();
+            }
+        }
+        else
+        {
+            timeLeft -= 1f;
+            Sound_Effects.PlayOneShot(Wrong);
         }
     }
     public void OpenPanel(GameObject openable)
@@ -152,20 +166,29 @@ private void LoadNewPattern()
         Interface.SetActive(true);
         closable.SetActive(false);
     }
-    void OnDisable()
+    public void Retry()
     {
-        // Reset the line renderer and other state when the script is disabled
-        if (lr != null)
-        {
-            lr.positionCount = 0;
-        }
-
-        points.Clear();
-        lastPoints = null;
-        nextStarIndex = 0;
+        SceneManager.LoadScene("Infinite");
+    }
+    public void Quit()
+    {
+        balance += coins;
+        PlayerPrefs.SetInt("Total", balance);
+        SceneManager.LoadScene("LoadingMenu");
     }
     public void SoundTest()
     {
         Sound_Effects.PlayOneShot(Test);
+    }
+    void GameOver()
+    {
+        isGameOver = true;
+        GameOverScreen.SetActive(true);
+        Interface.SetActive(false);
+    }
+
+    bool IsPatternCompleted()
+    {
+        return nextStarIndex >= CurrentPattern.Count;
     }
 }

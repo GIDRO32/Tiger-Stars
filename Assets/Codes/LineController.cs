@@ -24,6 +24,8 @@ public class LineController : MonoBehaviour
     public GameObject GameOverScreen;
     public GameObject PausePanel;
     public GameObject HomePanel;
+    public GameObject StartArrow;
+    public GameObject Objective;
     private int nextStarIndex = 0; // Index to track the next expected star in the order
     public Transform lastPoints;
     public string LevelTag;
@@ -35,7 +37,9 @@ public class LineController : MonoBehaviour
     void Awake()
     {
         lr = GetComponent<LineRenderer>();
-        Interface.SetActive(true);
+        Objective.SetActive(true);
+        Interface.SetActive(false);
+        StartArrow.SetActive(true);
         GameOverScreen.SetActive(false);
         ClearPanel.SetActive(false);
         PausePanel.SetActive(false);
@@ -53,6 +57,8 @@ public class LineController : MonoBehaviour
             }
             else
             {
+                Sound_Effects.PlayOneShot(Connect);
+                StartArrow.SetActive(false);
                 points.Add(finalPoint);
                 lr.enabled = true;
                 SetupLine();
@@ -64,7 +70,6 @@ public class LineController : MonoBehaviour
         {
             Sound_Effects.PlayOneShot(Wrong);
             health--;
-            Debug.Log("WRONG!");
         }
     }
 
@@ -106,7 +111,6 @@ public class LineController : MonoBehaviour
             RaycastHit2D hit = Physics2D.Raycast(worldPoint, Vector2.zero);
             if (hit.collider != null)
             {
-                Sound_Effects.PlayOneShot(Connect);
                 makeLine(hit.collider.transform);
                 print(hit.collider.name);
             }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Product : MonoBehaviour
 {
+    public int Coins;
     #region Singleton:Product
     public static Product Instance;
     void Awake()
@@ -19,15 +20,24 @@ public class Product : MonoBehaviour
         }
     }
     #endregion
-    
-    public int Coins;
 
     public void UseCoins(int amount)
     {
         Coins -= amount;
+        PlayerPrefs.SetInt("Total", Coins);
     }
     public bool HasEnoughCoins(int amount)
     {
         return(Coins >= amount);
+    }
+    void Update()
+    {
+        Coins = PlayerPrefs.GetInt("Total", Coins);
+        // PlayerPrefs.SetInt("Total", Coins);
+    }
+    public void ResetData()
+    {
+        Coins = 0;
+        PlayerPrefs.SetInt("Total", Coins);
     }
 }

@@ -9,6 +9,7 @@ public class MenuControl : MonoBehaviour
     public AudioClip Test;
     public AudioClip Open;
     public AudioClip Close;
+    public AudioClip Reset;
     public GameObject MainMenu;
     public GameObject[] MenuArray;
     public GameObject[] CompleteMarks;
@@ -53,6 +54,20 @@ public class MenuControl : MonoBehaviour
             {
                 CompleteMarks[i].SetActive(false);
             }
+        }
+    }
+    public void ResetData()
+    {
+        Sounds.PlayOneShot(Reset);
+        for(int j = 1; j < CompleteMarks.Length; j++)
+        {
+            isBeaten = PlayerPrefs.GetInt("Level" + j.ToString(),isBeaten);
+            if(isBeaten == 1)
+            {
+                CompleteMarks[j].SetActive(false);
+                isBeaten = 0;
+            }
+            PlayerPrefs.SetInt("Level" + j.ToString(),isBeaten);
         }
     }
 }
