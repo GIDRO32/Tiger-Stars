@@ -8692,29 +8692,49 @@ MonoBehaviour:
     Title: Amethyst
     price: 750
     isAvailable: 0
+  - Image: {fileID: 21300000, guid: 1edb082554eda3b468c4b6b234637472, type: 3}
+    Title: Amber
+    price: 1500
+    isAvailable: 0
+  - Image: {fileID: 21300000, guid: c6ad446e2d0aa0d4b90072c65cb58430, type: 3}
+    Title: Topaz
+    price: 2500
+    isAvailable: 0
   - Image: {fileID: 21300000, guid: c16df51e947b14248959d4690ec76eb3, type: 3}
     Title: Gold
-    price: 1500
+    price: 4000
     isAvailable: 0
   - Image: {fileID: 21300000, guid: 007927c473589004690ec78d6b1b875d, type: 3}
     Title: Platinum
-    price: 2500
+    price: 6000
+    isAvailable: 0
+  - Image: {fileID: 21300000, guid: 1e7e6e07bba317c4e91227f06ddfeea1, type: 3}
+    Title: Emerald
+    price: 10000
     isAvailable: 0
   - Image: {fileID: 21300000, guid: 0ad5eb73c6491134e81f66fb0d9014cb, type: 3}
     Title: Sapphire
-    price: 4000
+    price: 15000
     isAvailable: 0
   - Image: {fileID: 21300000, guid: bdd6771157e087844921ea2fffd06fc4, type: 3}
     Title: Ruby
-    price: 6000
-    isAvailable: 0
-  - Image: {fileID: 21300000, guid: 86c15bf97ba3b394ebe0cb26c460bfe3, type: 3}
-    Title: Diamond
-    price: 10000
+    price: 25000
     isAvailable: 0
   - Image: {fileID: 21300000, guid: 3e008f4f95d0058409de4202b5f160cd, type: 3}
     Title: Plutonium
-    price: 25000
+    price: 40000
+    isAvailable: 0
+  - Image: {fileID: 21300000, guid: 86c15bf97ba3b394ebe0cb26c460bfe3, type: 3}
+    Title: Diamond
+    price: 60000
+    isAvailable: 0
+  - Image: {fileID: 21300000, guid: a439dab9db6f88640ad7be69f5d679c4, type: 3}
+    Title: Taffeite
+    price: 100000
+    isAvailable: 0
+  - Image: {fileID: 21300000, guid: 0cc4eb2efb5d70b43942dd7a8334e1ef, type: 3}
+    Title: Dark Star
+    price: 250000
     isAvailable: 0
   ItemTemplate: {fileID: 5161868915073317402, guid: a51e33df309fe4342ab0aa5d16fa6731, type: 3}
   ShopScrolling: {fileID: 103891574}
