@@ -1794,7 +1794,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -3, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -3514,7 +3514,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3cf7eedfabc314ba39c7564eafb3ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timer: {fileID: 0}
   health_show: {fileID: 1482153413}
   Connect_Counter: {fileID: 2121517277}
   Sound_Effects: {fileID: 1187034057}

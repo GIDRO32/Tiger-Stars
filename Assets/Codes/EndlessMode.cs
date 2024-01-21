@@ -136,7 +136,7 @@ public class EndlessMode : MonoBehaviour
             else
             {
                 Sound_Effects.PlayOneShot(Connect);
-                coins += 100;
+                coins++;
                 PlayerPattern.Add(star);
                 lr.enabled = true;
                 SetupLine();
