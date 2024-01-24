@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace rIAEugth.vseioAW.Game
+namespace _playerActiveAnalysi.SCRIPTS.Space.aData
 {
-    public class Appps:MonoBehaviour
+    public class Appps : MonoBehaviour
     {
         public void Awake()
         {

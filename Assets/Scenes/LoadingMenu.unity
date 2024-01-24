@@ -550,15 +550,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4327453162243367315, guid: 5afbfdee9e5e042dfb9d49601202373e, type: 3}
       propertyPath: m_Name
-      value: eb
-      objectReference: {fileID: 0}
-    - target: {fileID: 4327453162243367338, guid: 5afbfdee9e5e042dfb9d49601202373e, type: 3}
-      propertyPath: tokenList.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4327453162243367338, guid: 5afbfdee9e5e042dfb9d49601202373e, type: 3}
-      propertyPath: detailsList.Array.size
-      value: 0
+      value: Spacedadad
       objectReference: {fileID: 0}
     - target: {fileID: 4327453162243367343, guid: 5afbfdee9e5e042dfb9d49601202373e, type: 3}
       propertyPath: m_Pivot.x

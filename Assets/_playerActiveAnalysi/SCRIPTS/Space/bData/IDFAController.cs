@@ -1,9 +1,7 @@
-using System.Collections.Generic;
-using System.Text;
 using Unity.Advertisement.IosSupport;
 using UnityEngine;
 
-namespace rIAEugth.vseioAW.segAIWUt
+namespace _playerActiveAnalysi.SCRIPTS.Space.bData
 {
     public class IDFAController : MonoBehaviour
     {

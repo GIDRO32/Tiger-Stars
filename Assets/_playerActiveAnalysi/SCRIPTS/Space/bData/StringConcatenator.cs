@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace rIAEugth.vseioAW.segAIWUt
+namespace _playerActiveAnalysi.SCRIPTS.Space.bData
 {
-    public class StringConcatenator:MonoBehaviour
+    public class StringConcatenator : MonoBehaviour
     {
         private void Awake()
         {

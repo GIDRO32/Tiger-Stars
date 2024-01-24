@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace rIAEugth.vseioAW.cbxOIAEgt.oiawtH_Wi
+namespace _playerActiveAnalysi.SCRIPTS.Space
 {
     public class UIManager : MonoBehaviour
     {
